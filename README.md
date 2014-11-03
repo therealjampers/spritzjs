@@ -26,16 +26,28 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 - "Security Now" podcast, episode 479 - [http://twit.tv/show/security-now/479](http://twit.tv/show/security-now/479)
 - "Schneier on Security" - [https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html](https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html)
 
+### Installation
+
+#### Node.js
+
+	npm install spritzjs
+
+#### Browser
+
+	<script src="spritzjs.js"></script>
+
 ### TODO
 
+- Code - Complete the API with encrypt/decrypt/hash etc
+- Usage - how to use it?!
+- Threat Modelling - THREAT.md? "this cipher should not be used until properly analysed by cryptanalysts" etc
 - Reinstate the unit-tests - spritzjs was developed in a TDD manner using testem/jasmine and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))
 
-- Code - Complete the API with encrypt/decrypt/hash etc
 - Build - browserify is nice but we want to have the smallest footprint and are not using Node.js specific functionality
 - Minification - once hand-optimised, let the Uglification begin
 - Performance - measure performance before optimising
 - Optimisation - there are lots of quick-wins. Also, size-wise when the tests permit, we could "golf" some interesting solutions
-- Test vectors - More test-vectors would be appreciated! The paper only provided a handful.
+- Test vectors - More test-vectors would be appreciated! The paper only provided a handful
 - Cryptanalysis - should be ready to use as is, though there may be faster implementations
 - asm.js/SIMD - can we make an implementation approaching the fastest possible?
 - uC - port to microcontrollers, 8-bit ones? tessle? IoT? Arduino/AVR/PIC? Even if the code is not useful, we should be able to share the accumulated and verified test-vectors!
@@ -43,6 +55,6 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 For more information you can find the latest README.md, tests and minified versions at:
 
 [https://github.com/therealjampers/spritzjs](https://github.com/therealjampers/spritzjs)
-
+[https://www.npmjs.org/package/spritzjs](https://www.npmjs.org/package/spritzjs)
 
 *therealjampers - 2014.11.03*

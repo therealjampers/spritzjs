@@ -271,6 +271,34 @@
 		return z;
 	}
 
+/*
+Encrypt(K , M )
+1 KeySetup(K )
+2 C = M + Squeeze(M.length)
+3 return C
+
+Decrypt(K , C )
+1 KeySetup(K )
+2 M = C − Squeeze(M.length)
+3 return M
+
+KeySetup(K )
+1 InitializeState()
+2 Absorb(K )
+
+EncryptWithIV(K , IV , M )
+1 KeySetup(K ); AbsorbStop()
+2 Absorb(IV )
+3 C = M + Squeeze(M.length)
+4 return C
+
+Hash(M,r)
+1 InitializeState()
+2 Absorb(M ); AbsorbStop()
+3 Absorb(r)
+4 return Squeeze(r)
+*/
+
 
 	/******************
 		Utility functions
