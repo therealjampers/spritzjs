@@ -1,10 +1,10 @@
 {
   "name": "spritzjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Spritz stream-cipher implementation in JavaScript",
   "main": "spritzjs.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/.bin/tape ./test/spritzjs-tests.js"
   },
   "repository": {
     "type": "git",
@@ -19,10 +19,13 @@
     "crypto",
     "8-bit"
   ],
-  "author": "therealjampears",
+  "author": "therealjampers",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/therealjampers/spritzjs/issues"
   },
-  "homepage": "https://github.com/therealjampers/spritzjs"
+  "homepage": "https://github.com/therealjampers/spritzjs",
+  "devDependencies": {
+    "tape": "^3.0.1"
+  }
 }
