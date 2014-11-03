@@ -54,7 +54,7 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 For more information you can find the latest README.md, tests and minified versions at:
 
-[https://github.com/therealjampers/spritzjs](https://github.com/therealjampers/spritzjs)
-[https://www.npmjs.org/package/spritzjs](https://www.npmjs.org/package/spritzjs)
+- [https://github.com/therealjampers/spritzjs](https://github.com/therealjampers/spritzjs)
+- [https://www.npmjs.org/package/spritzjs](https://www.npmjs.org/package/spritzjs)
 
 *therealjampers - 2014.11.03*
