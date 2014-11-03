@@ -1,5 +1,5 @@
 /******************************************************************************
-	spritzjs v0.0.1 - A Spritz stream-cipher implementation in JavaScript
+	spritzjs - A Spritz stream-cipher implementation in JavaScript
 
 	Created with reference to "Spritz - a spongy RC4-like stream cipher and hash function"
 	by Ronald L. Rivest and Jacob C. N. Schuldt on 2014.10.27 - http://people.csail.mit.edu/rivest/pubs/RS14.pdf
@@ -28,7 +28,7 @@
 
 	Released under the MIT license.
 
-		- therealjampers 2014.11.03
+		- therealjampers
 ******************************************************************************/
 
 (function () {

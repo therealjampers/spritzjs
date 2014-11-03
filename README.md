@@ -1,8 +1,6 @@
-# spritzjs - v0.0.1
-
+# spritzjs
 
 ### A Spritz stream-cipher implementation in JavaScript
-
 
 Created with reference to "Spritz - a spongy RC4-like stream cipher and hash function"
 by Ronald L. Rivest and Jacob C. N. Schuldt on 2014.10.27 - [http://people.csail.mit.edu/rivest/pubs/RS14.pdf](http://people.csail.mit.edu/rivest/pubs/RS14.pdf)
@@ -38,11 +36,10 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 ### TODO
 
+- <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using testem/jasmine and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))</strike>
 - Code - Complete the API with encrypt/decrypt/hash etc
 - Usage - how to use it?!
 - Threat Modelling - THREAT.md? "this cipher should not be used until properly analysed by cryptanalysts" etc
-- Reinstate the unit-tests - spritzjs was developed in a TDD manner using testem/jasmine and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))
-
 - Build - browserify is nice but we want to have the smallest footprint and are not using Node.js specific functionality
 - Minification - once hand-optimised, let the Uglification begin
 - Performance - measure performance before optimising
