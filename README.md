@@ -31,38 +31,33 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 #### Node.js
 
-	npm install spritzjs
+  npm install spritzjs
 
-	npm install
+  npm install
 
 ##### Run tests
 
-	npm test
+  npm test
 
 #### Browser
 
-	<script src="spritzjs.js"></script>
+  <script src="spritzjs.js"></script>
 
 ### Usage
 
-	var spritzjs = require('spritzjs');
+  var spritzjs = require('spritzjs');
 
 or in the browser (though not strictly needed):
 
-	var spritzjs = window.spritzjs;
+  var spritzjs = window.spritzjs;
 
 then:
 
-	var M = [65, 66, 67];	// "ABC" as a byte array
-	var r = 32; 					// 32 byte hash required
+  var M = [65, 66, 67];             // "ABC" as a byte array
+  var r = 32;                       // 32 byte hash required
 
-	spritzjs.initializeState();
-	spritzjs.absorb(M);
-	spritzjs.absorbStop();
-	spritzjs.absorb([r]);
-
-	var hashed = spritzjs.squeeze(r);	// hashed now contains 32 bytes
-	console.log(hashed.length);				// -> 32
+  var hashed = spritzjs.hash(M, r); // hashed now contains 32 bytes
+  console.log(hashed.length);       // -> 32
 
 
 ### TODO
