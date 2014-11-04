@@ -31,48 +31,48 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 #### Node.js
 
-  npm install spritzjs
+	npm install spritzjs
 
-  npm install
+	npm install
 
 ##### Run tests
 
-  npm test
+  	npm test
 
 #### Browser
 
-  <script src="spritzjs.js"></script>
+  	<script src="spritzjs.js"></script>
 
 ### Usage
 
-  var spritzjs = require('spritzjs');
+  	var spritzjs = require('spritzjs');
 
 or in the browser (though not strictly needed):
 
-  var spritzjs = window.spritzjs;
+  	var spritzjs = window.spritzjs;
 
 then:
 
-  var M = [65, 66, 67];             // "ABC" as a byte array
+  	var M = [65, 66, 67];             // "ABC" as a byte array
 
-  var r = 32;                       // 32 byte hash required
+  	var r = 32;                       // 32 byte hash required
 
-  var hashed = spritzjs.hash(M, r); // hashed now contains 32 bytes
+  	var hashed = spritzjs.hash(M, r); // "hashed" now contains 32 bytes of hashed "M" material
 
-  console.log(hashed.length);       // -> 32
+  	console.log(hashed.length);       // -> 32
 
 
 ### TODO
 
 - <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using [testem](https://www.npmjs.org/package/testem), [jasmine](https://www.npmjs.org/package/jasmine) and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))</strike>
-- Code - Complete the API with encrypt/decrypt/hash etc
-- Usage - how to use it. (perfunctory hashing example now included)
+- Code - Complete the API with encrypt/decrypt etc
+- Usage - how to use it. NB. perfunctory hashing example now included
 - Threat Modelling - THREAT.md? "this cipher should not be used until pounded on by cryptanalysts" etc
 - Build - [browserify](https://www.npmjs.org/package/browserify) is awesome but we want to have the smallest footprint and are not using Node.js specific functionality. Consider js(l|h)int for ensuring correctness of the clean-source version
 - Performance - measure performance before optimising
 - Optimisation - there are quick-wins available. Also, what about asm.js/SIMD can we use anything here?
 - Minification - once hand-optimised, let the uglification begin. Also, size-wise when the tests permit, we could "golf" some interesting solutions
-- Test vectors - More test-vectors would be appreciated! The paper only provided a handful
+- Test vectors - More test-vectors would be appreciated! The paper only provided a handful (all are implemented in test/spritzjs-tests.js)
 - Cryptanalysis - should be ready to use as is, though there may be faster implementations
 - uC - port to microcontrollers, specifically 8-bit ones? tessle? IoT? Arduino/AVR/PIC? Even if ported implementation code is not useful depending on the target architecture, we should be able to share the accumulated (verified) test-vectors
 

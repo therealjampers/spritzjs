@@ -269,10 +269,31 @@
     return z;
   }
 
-/******************
-  high-level functions (target API)
-*******************/
+  /******************
+    high-level functions (target API)
+  *******************/
 
+  /*
+  Hash(M,r)
+  1 InitializeState()
+  2 Absorb(M ); AbsorbStop()
+  3 Absorb(r)
+  4 return Squeeze(r)
+  */
+  function hash(M, r) {
+
+    /* TODO refactor into common-guard assertions */
+    if (!(Array.prototype.slice.call(arguments).length === 2
+        && Array.isArray(M)
+        && M.length > 0
+        && typeof r === 'number'
+        && r > 0)) return false;  // consider integer check for r
+
+    initializeState();
+    absorb(M); absorbStop();
+    absorb([r & 0xff]);           // NB. restricted(!) to 255-byte hashes
+    return squeeze(r);
+  }
 /*
 TODO
 
@@ -296,28 +317,6 @@ EncryptWithIV(K , IV , M )
 3 C = M + Squeeze(M.length)
 4 return C
 */
-
-  /*
-  Hash(M,r)
-  1 InitializeState()
-  2 Absorb(M ); AbsorbStop()
-  3 Absorb(r)
-  4 return Squeeze(r)
-  */
-  function hash(M, r) {
-
-    /* TODO refactor into common-guard assertions */
-    if (!(Array.prototype.slice.call(arguments).length === 2
-        && Array.isArray(M)
-        && M.length > 0
-        && typeof r === 'number'
-        && r > 0)) return false;  // consider integer check for r
-
-    initializeState();
-    absorb(M); absorbStop();
-    absorb([r & 0xff]);           // NB. restricted(!) to 255-byte hashes
-    return squeeze(r);
-  }
 
   /******************
     utility functions
@@ -395,9 +394,6 @@ EncryptWithIV(K , IV , M )
       , S: S.slice(0)
     };
   }
-
-
-
 
   /*
     API definition
