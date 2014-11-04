@@ -8,7 +8,7 @@
   "Security Now" podcast, episode 479 - http://twit.tv/show/security-now/479
   "Schneier on Security" - https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html
 
-  Intent: Provide a literal JavaScript reference implementation from the pseudo-code provided by Rivest and Schuldt;
+  Intent: Provide a literal JavaScript reference implementation from the excellent pseudo-code provided by Rivest and Schuldt;
   allowing the reader to follow the Paper with this code serving as an accompaniment. To this end, variable/parameter names and their
   casing have been preserved, however the function names have been camel-cased for JS convention.
 
@@ -54,8 +54,8 @@
     , j
     , k
     , z
-    , a
     , w
+    , a
     , S
     ;
 
@@ -71,7 +71,7 @@
     4   S[v] = v
   */
   function initializeState() {
-    // NB. N is set to 256 in the above code, so we are not receiving it as per literal spec.
+    // NB. N is set to 256 in the above code, so we are not receiving it as per literal spec
     var v;
 
     i = j = k = z = a = 0;
@@ -401,8 +401,8 @@ EncryptWithIV(K , IV , M )
   */
   var API = {
     /* high-level functions */
-    // TODO add encrypt/decrypt
       hash: hash
+    // TODO add encrypt/decrypt
 
     /* core functions as per spec */
     , initializeState: initializeState

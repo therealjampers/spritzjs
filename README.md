@@ -6,7 +6,7 @@ Created with reference to "Spritz - a spongy RC4-like stream cipher and hash fun
 by Ronald L. Rivest and Jacob C. N. Schuldt on 2014.10.27 - [http://people.csail.mit.edu/rivest/pubs/RS14.pdf](http://people.csail.mit.edu/rivest/pubs/RS14.pdf)
 
 ### Intent
-Provide a literal JavaScript reference implementation from the pseudo-code provided by Rivest and Schuldt;
+Provide a literal JavaScript reference implementation from the excellent pseudo-code provided by Rivest and Schuldt;
 allowing the reader to follow the Paper with this code serving as an accompaniment. To this end, variable/parameter names and their
 casing have been preserved, however the function names have been camel-cased for JS convention.
 
