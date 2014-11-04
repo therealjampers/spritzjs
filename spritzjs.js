@@ -71,7 +71,7 @@
     4   S[v] = v
   */
   function initializeState() {
-    // NB. N is set to 256 above, so not receiving it as passed.
+    // NB. N is set to 256 in the above code, so we are not receiving it as per literal spec.
     var v;
 
     i = j = k = z = a = 0;
@@ -210,7 +210,7 @@
     6 return P
   */
   function squeeze(r) {
-    var v// = r
+    var v
       , P = []
       ;
 
@@ -432,6 +432,6 @@ EncryptWithIV(K , IV , M )
     window.spritzjs = API;
   } else {
     /* ...requires consumer-thought */
-    if (typeof console !== 'undefined') console.error("unable to export spritz API!");
+    if (typeof console !== 'undefined') console.error("unable to export spritzjs API!");
   }
 }());

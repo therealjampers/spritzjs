@@ -25,6 +25,7 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
  by Rivest and Schuldt - [http://people.csail.mit.edu/rivest/pubs/RS14.pdf](http://people.csail.mit.edu/rivest/pubs/RS14.pdf)
 - "Security Now" podcast, episode 479 - [http://twit.tv/show/security-now/479](http://twit.tv/show/security-now/479)
 - "Schneier on Security" - [https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html](https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html)
+- "Security Now" podcast, episode 480 - [http://twit.tv/show/security-now/480](http://twit.tv/show/security-now/480) and [shownotes](https://www.grc.com/sn/SN-480-Notes.pdf)
 
 
 ### Installation
