@@ -1,10 +1,10 @@
 {
   "name": "spritzjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Spritz stream-cipher implementation in JavaScript",
   "main": "spritzjs.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/tape ./test/spritzjs-tests.js"
+    "test": "node test/spritzjs-tests.js"
   },
   "repository": {
     "type": "git",

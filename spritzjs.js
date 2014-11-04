@@ -42,7 +42,7 @@
 		, N_OVER_TWO_FLOOR = 	Math.floor(N / 2)
 		, TWO_N = 						2 * N
 		/*
-			these are arguably less readable/pointless with modern JIT. premature optimization!
+			premature optimization?
 		*/
 		;
 
@@ -59,6 +59,10 @@
 		, S
 		;
 
+	/******************
+		core functions
+	*******************/
+
 	/*
 		InitializeState(N)
 		1 i = j = k = z = a = 0
@@ -68,7 +72,7 @@
 	*/
 	function initializeState() {
 		// NB. N is set to 256 above, so not receiving it as passed.
-		var v;// = N;
+		var v;
 
 		i = j = k = z = a = 0;
 		w = 1;
@@ -77,7 +81,6 @@
 		for (v = 0; v < N; v++) {
 			S[v] = v;
 		}
-		// TODO: while (v--) S[v] = v;
 	}
 
 	/*
@@ -166,8 +169,6 @@
 		4 until gcd(w,N)=1
 	*/
 	function whip(r) {
-		// var v = r;
-		// while (v--) {
 		var v;
 		for (v = 0; v < r; v++) {
 			update();
@@ -175,7 +176,7 @@
 		do {
 			w = madd(w, 1);
 		} while (gcd(w, N) !== 1);
-		// NB. simple-case assumption that N is a power of 2 could instead use:
+		// NB. a simple-case assumption is that if N is a power of 2 then one could instead use:
 		// w = madd(w, 2);
 	}
 
@@ -186,13 +187,11 @@
 		3 		Swap(S[v], S[N − 1 − v])
 	*/
 	function crush() {
-		var v// = N_OVER_TWO_FLOOR
+		var v
 			, index
 			;
 
 		for (v = 0; v < N_OVER_TWO_FLOOR;v++) {
-		// while (v--) {
-
 			index = N_MINUS_1 - v;
 
 			if (S[v] > S[index]) {
@@ -219,7 +218,6 @@
 			shuffle();
 		}
 
-		// while (v--) P.push(drip());
 		for (v = 0; v < r; v++) {
 			P[v] = drip();
 		}
@@ -271,7 +269,13 @@
 		return z;
 	}
 
+/******************
+	high-level functions (target API)
+*******************/
+
 /*
+TODO
+
 Encrypt(K , M )
 1 KeySetup(K )
 2 C = M + Squeeze(M.length)
@@ -301,7 +305,7 @@ Hash(M,r)
 
 
 	/******************
-		Utility functions
+		utility functions
 	*******************/
 
 	/*
@@ -411,9 +415,9 @@ Hash(M,r)
 	if(typeof module !== 'undefined' && module.exports){
 		/* export in Node.js style */
 		module.exports = API;
-	} else if (typeof window !== 'undefined' && !window.spritz) {
+	} else if (typeof window !== 'undefined' && !window.spritzjs) {
 		/* augment window object */
-		window.spritz = API;
+		window.spritzjs = API;
 	} else {
 		/* ...requires consumer-thought */
 		if (typeof console !== 'undefined') console.error("unable to export spritz API!");

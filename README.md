@@ -19,10 +19,13 @@ See: [http://kangax.github.io/compat-table/es5/#Array.isArray](http://kangax.git
 
 Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
-##### Inspiration:
+##### References:
 
+- "Spritz - a spongy RC4-like stream cipher and hash function"
+ by Rivest and Schuldt - [http://people.csail.mit.edu/rivest/pubs/RS14.pdf](http://people.csail.mit.edu/rivest/pubs/RS14.pdf)
 - "Security Now" podcast, episode 479 - [http://twit.tv/show/security-now/479](http://twit.tv/show/security-now/479)
 - "Schneier on Security" - [https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html](https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html)
+
 
 ### Installation
 
@@ -30,24 +33,51 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 	npm install spritzjs
 
+	npm install
+
+##### Run tests
+
+	npm test
+
 #### Browser
 
 	<script src="spritzjs.js"></script>
 
+### Usage
+
+	var spritzjs = require('spritzjs');
+
+or in the browser (though not strictly needed):
+
+	var spritzjs = window.spritzjs;
+
+then:
+
+	var M = [65, 66, 67];	// "ABC" as a byte array
+	var r = 32; 					// 32 byte hash required
+
+	spritzjs.initializeState();
+	spritzjs.absorb(M);
+	spritzjs.absorbStop();
+	spritzjs.absorb([r]);
+
+	var hashed = spritzjs.squeeze(r);	// hashed now contains 32 bytes
+	console.log(hashed.length);				// -> 32
+
+
 ### TODO
 
-- <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using testem/jasmine and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))</strike>
+- <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using [testem](https://www.npmjs.org/package/testem), [jasmine](https://www.npmjs.org/package/jasmine) and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))</strike>
 - Code - Complete the API with encrypt/decrypt/hash etc
-- Usage - how to use it?!
-- Threat Modelling - THREAT.md? "this cipher should not be used until properly analysed by cryptanalysts" etc
-- Build - browserify is nice but we want to have the smallest footprint and are not using Node.js specific functionality
-- Minification - once hand-optimised, let the Uglification begin
+- Usage - how to use it. (perfunctory hashing example now included)
+- Threat Modelling - THREAT.md? "this cipher should not be used until pounded on by cryptanalysts" etc
+- Build - [browserify](https://www.npmjs.org/package/browserify) is awesome but we want to have the smallest footprint and are not using Node.js specific functionality. Consider js(l|h)int for ensuring correctness of the clean-source version
 - Performance - measure performance before optimising
-- Optimisation - there are lots of quick-wins. Also, size-wise when the tests permit, we could "golf" some interesting solutions
+- Optimisation - there are quick-wins available. Also, what about asm.js/SIMD can we use anything here?
+- Minification - once hand-optimised, let the uglification begin. Also, size-wise when the tests permit, we could "golf" some interesting solutions
 - Test vectors - More test-vectors would be appreciated! The paper only provided a handful
 - Cryptanalysis - should be ready to use as is, though there may be faster implementations
-- asm.js/SIMD - can we make an implementation approaching the fastest possible?
-- uC - port to microcontrollers, 8-bit ones? tessle? IoT? Arduino/AVR/PIC? Even if the code is not useful, we should be able to share the accumulated and verified test-vectors!
+- uC - port to microcontrollers, specifically 8-bit ones? tessle? IoT? Arduino/AVR/PIC? Even if ported implementation code is not useful depending on the target architecture, we should be able to share the accumulated (verified) test-vectors
 
 For more information you can find the latest README.md, tests and minified versions at:
 
