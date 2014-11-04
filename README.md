@@ -54,9 +54,11 @@ or in the browser (though not strictly needed):
 then:
 
   var M = [65, 66, 67];             // "ABC" as a byte array
+
   var r = 32;                       // 32 byte hash required
 
   var hashed = spritzjs.hash(M, r); // hashed now contains 32 bytes
+
   console.log(hashed.length);       // -> 32
 
 
