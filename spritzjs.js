@@ -2,35 +2,45 @@
   spritzjs - A Spritz stream-cipher implementation in JavaScript
 
   Created with reference to "Spritz - a spongy RC4-like stream cipher and hash function"
-  by Ronald L. Rivest and Jacob C. N. Schuldt on 2014.10.27 - http://people.csail.mit.edu/rivest/pubs/RS14.pdf
+  by Ronald L. Rivest and Jacob C. N. Schuldt on 2014.10.27
 
-  Inspired by:
+  Intent:
+  Provide a literal JavaScript reference implementation from the excellent pseudo-code
+  created by Rivest and Schuldt; allowing the reader to follow the Paper with this code
+  serving as an accompaniment. To this end, variable/parameter names and their casing have
+  been preserved, however the function names have been camel-cased for JS convention.
+
+  It is hoped this may serve as a starting point for those who wish to explore this cipher
+  in a JS context.
+
+  This file is deliberately unoptimized with the aim of readability,
+  yet is *relatively* portable. (For example, "isArray" support is assumed rather than
+  feature-detected, and may need replacing if you wish to run this on IE8-, or very old
+  Firefox versions.
+  See: http://kangax.github.io/compat-table/es5/#Array.isArray
+
+  Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
+
+  References:
+  "Spritz - a spongy RC4-like stream cipher and hash function"
+    by Rivest and Schuldt - http://people.csail.mit.edu/rivest/pubs/RS14.pdf
   "Security Now" podcast, episode 479 - http://twit.tv/show/security-now/479
+  "Security Now" podcast, episode 480 - http://twit.tv/show/security-now/480
   "Schneier on Security" - https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html
 
-  Intent: Provide a literal JavaScript reference implementation from the excellent pseudo-code provided by Rivest and Schuldt;
-  allowing the reader to follow the Paper with this code serving as an accompaniment. To this end, variable/parameter names and their
-  casing have been preserved, however the function names have been camel-cased for JS convention.
-
-  It is hoped this may serve as a starting point for those who wish to explore this cipher in a JS context.
-
-  This source file is deliberately unoptimized with the aim of readability, yet is *relatively* portable. (For example,
-  "isArray" support is assumed rather than feature-detected, and may need replacing
-  if you wish to run this on IE8-, or very old Firefox versions.
-  See: http://kangax.github.io/compat-table/es5/#Array.isArray)
-
-  For more information you can find the latest README.md, tests and minified versions at:
+  For more information you can find the latest README.md, tests and other versions at:
 
   https://github.com/therealjampers/spritzjs
 
-  Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
-  *More test-vectors would be appreciated!*
+  Test-vectors appreciated!
 
   Released under the MIT license.
 
-    - therealjampers
+    - therealjampers 2014
+
 ******************************************************************************/
 
+/* bog-standard IIFE */
 (function () {
 
   "use strict";
@@ -76,8 +86,8 @@
 
     i = j = k = z = a = 0;
     w = 1;
-    S = [];
 
+    S = [];
     for (v = 0; v < N; v++) {
       S[v] = v;
     }
@@ -94,7 +104,7 @@
       basic validation of I
       consider bounds-checking and deep-checking of each N-value such that they are in the valid range (0 <= x < N)
     */
-    if (!Array.isArray(I) || I.length < 1) return false;
+    if (!(Array.isArray(I) && I.length > 0)) return false;
 
     for (v = 0; v < I.length; v++) {
       absorbByte(I[v]);
@@ -191,7 +201,7 @@
       , index
       ;
 
-    for (v = 0; v < N_OVER_TWO_FLOOR;v++) {
+    for (v = 0; v < N_OVER_TWO_FLOOR; v++) {
       index = N_MINUS_1 - v;
 
       if (S[v] > S[index]) {
@@ -211,13 +221,14 @@
   */
   function squeeze(r) {
     var v
-      , P = []
+      , P
       ;
 
     if (a > 0) {
       shuffle();
     }
 
+    P = [];
     for (v = 0; v < r; v++) {
       P[v] = drip();
     }
@@ -244,7 +255,7 @@
     1 i=i+w
     2 j=k+S[j+S[i]]
     3 k=i+k+S[j]
-    4 Swap(S [i], S[j])
+    4 Swap(S[i], S[j])
   */
   function update() {
     i = madd(i, w);
@@ -282,7 +293,10 @@
   */
   function hash(M, r) {
 
-    /* TODO refactor into common-guard assertions */
+    /* TODO refactor into some common guard functions
+      NB. we are striving for readibility and Paper->Code mapping
+      but we can/should proxy the result of absorb when optimizing
+    */
     if (!(Array.prototype.slice.call(arguments).length === 2
         && Array.isArray(M)
         && M.length > 0
@@ -294,26 +308,66 @@
     absorb([r & 0xff]);           // NB. restricted(!) to 255-byte hashes
     return squeeze(r);
   }
+
+  /*
+  Encrypt(K, M)
+  1 KeySetup(K)
+  2 C = M + Squeeze(M.length)
+  3 return C
+  */
+  function encrypt(K, M) {
+
+    var C = []
+      , stream
+      , i
+      ;
+
+    if (!(Array.prototype.slice.call(arguments).length === 2
+        && Array.isArray(K)
+        && K.length > 0
+        && Array.isArray(M)
+        && M.length > 0)) return false;
+
+    keySetup(K);
+    stream = squeeze(M.length);
+    for (i = 0; i < M.length; i++) {
+      C[i] = madd(M[i], stream[i]);
+      // NB. this could be xor instead of modulo addition
+    }
+    return C;
+  }
+
+  /*
+  KeySetup(K)
+  1 InitializeState()
+  2 Absorb(K)
+  */
+  function keySetup(K) {
+
+    /* TODO refactor into some common guard functions
+      NB. we are striving for readibility and Paper->Code mapping
+      but we can/should proxy the result of absorb when optimizing
+    */
+    if (!(Array.prototype.slice.call(arguments).length === 1
+        && Array.isArray(K)
+        && K.length > 0)) return false;
+
+    initializeState();
+    absorb(K);
+    return true;
+  }
+
 /*
 TODO
 
-Encrypt(K , M )
-1 KeySetup(K )
-2 C = M + Squeeze(M.length)
-3 return C
-
-Decrypt(K , C )
-1 KeySetup(K )
+Decrypt(K , C)
+1 KeySetup(K)
 2 M = C − Squeeze(M.length)
 3 return M
 
-KeySetup(K )
-1 InitializeState()
-2 Absorb(K )
-
-EncryptWithIV(K , IV , M )
-1 KeySetup(K ); AbsorbStop()
-2 Absorb(IV )
+EncryptWithIV(K, IV, M)
+1 KeySetup(K); AbsorbStop()
+2 Absorb(IV)
 3 C = M + Squeeze(M.length)
 4 return C
 */
@@ -384,7 +438,8 @@ EncryptWithIV(K , IV , M )
     /* basic guard against unitialized state */
     if (!Array.isArray(S)) return false;
 
-    return {  i: i
+    return {
+        i: i
       , j: j
       , k: k
       , z: z
@@ -402,9 +457,12 @@ EncryptWithIV(K , IV , M )
   var API = {
     /* high-level functions */
       hash: hash
+    , encrypt: encrypt
     // TODO add encrypt/decrypt
 
-    /* core functions as per spec */
+    /* core functions */
+    , keySetup: keySetup
+
     , initializeState: initializeState
     , absorb: absorb
     , absorbByte: absorbByte

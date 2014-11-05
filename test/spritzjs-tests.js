@@ -34,6 +34,8 @@ test('spritzjs API', function (t) {
   t.equal(typeof spritzjs.update,       "function");
   t.equal(typeof spritzjs.output,       "function");
   t.equal(typeof spritzjs.hash,         "function");
+  t.equal(typeof spritzjs.keySetup,     "function");
+  t.equal(typeof spritzjs.encrypt,      "function");
   t.end();
 });
 
@@ -240,4 +242,73 @@ test('hash should return the same result as the initializeState/absorb/absorbSto
   t.equal(hashed[7], 0x18);
   t.end();
 });
+
+test('keySetup should disallow invalid arguments', function (t) {
+
+  t.equal(spritzjs.keySetup(),          false);       // arity 0
+  t.equal(spritzjs.keySetup([], []),    false);       // arity 2
+  t.equal(spritzjs.keySetup([], 1, 1),  false);       // arity 3
+
+  t.equal(spritzjs.keySetup([]),        false);       // K array too short
+  // TODO impose a minimum K length greater than 1!
+  t.end();
+});
+
+test('keySetup should allow valid K byte arrays', function (t) {
+  t.equal(spritzjs.keySetup([65, 66, 67]),        true);
+  t.end();
+});
+
+test('keySetup should produce the same internal state as the core primitive steps', function (t) {
+
+  var K = [65, 66, 67];
+
+  spritzjs.initializeState();
+  spritzjs.absorb(K);
+  var primitiveState = spritzjs.getState();
+
+  spritzjs.keySetup(K);
+  var keySetupState = spritzjs.getState();
+
+  t.deepEqual(primitiveState, keySetupState);
+  t.end();
+});
+
+test('encrypt should disallow invalid arguments', function (t) {
+
+  t.equal(spritzjs.encrypt(),          false);       // arity 0
+  t.equal(spritzjs.encrypt([]),        false);       // arity 1
+  t.equal(spritzjs.encrypt([], 1, 1),  false);       // arity 3
+
+  t.equal(spritzjs.encrypt([],   1),   false);       // K array too short
+  t.equal(spritzjs.encrypt([1], ""),   false);       // invalid M
+  t.equal(spritzjs.encrypt([1],  []),  false);      // invalid M
+  // TODO impose a minimum K length greater than 1!
+  t.end();
+});
+
+test('encrypt should return a ciphertext C of the same length as M', function (t) {
+  var K = [65, 66, 67]
+    , M = [68, 69, 70]
+    , C
+    ;
+
+  C = spritzjs.encrypt(K, M);
+
+  t.equal(M.length, C.length);
+  t.end();
+});
+
+test('encrypt should not return the same message that went in', function (t) {
+  var K = [65, 66, 67]
+    , M = [68, 69, 70]
+    , C
+    ;
+
+  C = spritzjs.encrypt(K, M);
+
+  t.notDeepEqual(M, C);
+  t.end();
+});
+
 
