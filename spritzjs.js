@@ -360,7 +360,72 @@
     stream = squeeze(C.length);
     for (i = 0; i < C.length; i++) {
       M[i] = msub(C[i], stream[i]);
+      // NB. this could be xor instead of modulo subtraction
+    }
+    return M;
+  }
+
+  /*
+  EncryptWithIV(K, IV, M)
+  1 KeySetup(K); AbsorbStop()
+  2 Absorb(IV)
+  3 C = M + Squeeze(M.length)
+  4 return C
+  */
+  function encryptWithIV(K, IV, M) {
+    var C = []
+      , stream
+      , i
+      ;
+
+    if (!(Array.prototype.slice.call(arguments).length === 3
+        && Array.isArray(K)
+        && K.length > 0
+        && Array.isArray(IV)
+        && IV.length > 0
+        && Array.isArray(M)
+        && M.length > 0)) return false;
+
+    keySetup(K); absorbStop();
+    absorb(IV);
+
+    stream = squeeze(M.length);
+    for (i = 0; i < M.length; i++) {
+      C[i] = madd(M[i], stream[i]);
       // NB. this could be xor instead of modulo addition
+    }
+    return C;
+  }
+
+  /*
+  NB. This is not in the Paper, merely implied
+  DecryptWithIV(K, IV, C)
+  1 KeySetup(K); AbsorbStop()
+  2 Absorb(IV)
+  3 M = C - Squeeze(C.length)
+  4 return M
+  */
+  function decryptWithIV(K, IV, C) {
+    var M = []
+      , stream
+      , i
+      ;
+
+    if (!(Array.prototype.slice.call(arguments).length === 3
+        && Array.isArray(K)
+        && K.length > 0
+        && Array.isArray(IV)
+        && IV.length > 0
+        && Array.isArray(C)
+        && C.length > 0)) return false;
+
+    keySetup(K); absorbStop();
+    absorb(IV);
+
+    stream = squeeze(C.length);
+    for (i = 0; i < C.length; i++) {
+      M[i] = msub(C[i], stream[i]);
+      // NB. this could be xor instead of modulo subtraction
     }
     return M;
   }
@@ -385,14 +450,40 @@
     return true;
   }
 
-/*
-TODO
-EncryptWithIV(K, IV, M)
-1 KeySetup(K); AbsorbStop()
-2 Absorb(IV)
-3 C = M + Squeeze(M.length)
-4 return C
-*/
+  /* TODO
+DomHash(J,M,r)
+1 InitializeState()
+2 Absorb(J ); AbsorbStop()
+3 Absorb(M ); AbsorbStop()
+4 Absorb(r)
+5 return Squeeze(r )
+
+
+MAC(K,M,r)
+1 InitializeState()
+2 Absorb(K ); AbsorbStop()
+3 Absorb(M ); AbsorbStop()
+4 Absorb(r)
+5 return Squeeze(r )
+
+AEAD(K,Z,H,M,r)
+1 InitializeState()
+2 Absorb(K ); AbsorbStop()
+3 Absorb(Z ); AbsorbStop()
+4 Absorb(H ); AbsorbStop()
+5 DivideMintoblocksM1,M2,...,Mt,
+each N/4 bytes long except possibly the last.
+6 fori=1tot
+7 Output Ci = Mi + Squeeze(Mi . length )
+8 Absorb(Ci )
+9 AbsorbStop()
+6
+10 11
+Absorb(r)
+Output Squeeze(r )
+
+  */
+
 
   /******************
     utility functions
@@ -481,7 +572,8 @@ EncryptWithIV(K, IV, M)
       hash: hash
     , encrypt: encrypt
     , decrypt: decrypt
-    // TODO add encrypt/decrypt
+    , encryptWithIV: encryptWithIV
+    , decryptWithIV: decryptWithIV
 
     /* core functions */
     , keySetup: keySetup

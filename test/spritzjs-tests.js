@@ -21,22 +21,24 @@ test('spritzjs existence', function (t) {
 });
 
 test('spritzjs API', function (t) {
-  t.equal(typeof spritzjs.getState,     "function");
-  t.equal(typeof spritzjs.absorb,       "function");
-  t.equal(typeof spritzjs.absorbByte,   "function");
-  t.equal(typeof spritzjs.absorbNibble, "function");
-  t.equal(typeof spritzjs.absorbStop,   "function");
-  t.equal(typeof spritzjs.shuffle,      "function");
-  t.equal(typeof spritzjs.whip,         "function");
-  t.equal(typeof spritzjs.crush,        "function");
-  t.equal(typeof spritzjs.squeeze,      "function");
-  t.equal(typeof spritzjs.drip,         "function");
-  t.equal(typeof spritzjs.update,       "function");
-  t.equal(typeof spritzjs.output,       "function");
-  t.equal(typeof spritzjs.hash,         "function");
-  t.equal(typeof spritzjs.keySetup,     "function");
-  t.equal(typeof spritzjs.encrypt,      "function");
-  t.equal(typeof spritzjs.decrypt,      "function");
+  t.equal(typeof spritzjs.getState,       "function");
+  t.equal(typeof spritzjs.absorb,         "function");
+  t.equal(typeof spritzjs.absorbByte,     "function");
+  t.equal(typeof spritzjs.absorbNibble,   "function");
+  t.equal(typeof spritzjs.absorbStop,     "function");
+  t.equal(typeof spritzjs.shuffle,        "function");
+  t.equal(typeof spritzjs.whip,           "function");
+  t.equal(typeof spritzjs.crush,          "function");
+  t.equal(typeof spritzjs.squeeze,        "function");
+  t.equal(typeof spritzjs.drip,           "function");
+  t.equal(typeof spritzjs.update,         "function");
+  t.equal(typeof spritzjs.output,         "function");
+  t.equal(typeof spritzjs.hash,           "function");
+  t.equal(typeof spritzjs.keySetup,       "function");
+  t.equal(typeof spritzjs.encrypt,        "function");
+  t.equal(typeof spritzjs.decrypt,        "function");
+  t.equal(typeof spritzjs.encryptWithIV,  "function");
+  t.equal(typeof spritzjs.decryptWithIV,  "function");
   t.end();
 });
 
@@ -359,5 +361,145 @@ test('decrypt(K, encrypt(K, M)) should equal the original M', function (t) {
   // QED
   t.end();
 });
+
+test('decrypt(K1, encrypt(K2, M)) should not equal the original M', function (t) {
+  var K1 =  [65, 66, 67]
+    , K2 =  [100, 101, 102]
+    , M =   [68, 69, 70]
+    ;
+
+  t.notDeepEqual(spritzjs.decrypt(K1, spritzjs.encrypt(K2, M)), M);
+  t.end();
+});
+
+test('encryptWithIV should disallow invalid arguments', function (t) {
+
+  t.equal(spritzjs.encryptWithIV(),                 false);       // arity 0
+  t.equal(spritzjs.encryptWithIV([]),               false);       // arity 1
+  t.equal(spritzjs.encryptWithIV([], 1),            false);       // arity 2
+  t.equal(spritzjs.encryptWithIV([], 1, 1, 1),      false);       // arity 4
+
+  // now here's a justification for TypeScript
+  t.equal(spritzjs.encryptWithIV([],   1),          false);       // K array too short
+
+  t.equal(spritzjs.encryptWithIV([1], ""),          false);       // invalid IV
+  t.equal(spritzjs.encryptWithIV([1],  []),         false);       // invalid IV
+
+  t.equal(spritzjs.encryptWithIV([1],  [1], ""),    false);       // invalid M
+  t.equal(spritzjs.encryptWithIV([1],  [1], []),    false);       // invalid M
+  // TODO impose minimum K, IV lengths greater than 1!
+  t.end();
+});
+
+test('encryptWithIV should return a ciphertext C of the same length as M', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , M =   [68, 69, 70]
+    , C
+    ;
+
+  C = spritzjs.encryptWithIV(K, IV, M);
+
+  t.equal(M.length, C.length);
+  t.end();
+});
+
+test('encryptWithIV should not return the same message that went in', function (t) {
+  var K = [65, 66, 67]
+    , IV = [1, 2, 3]
+    , M = [68, 69, 70]
+    , C
+    ;
+
+  C = spritzjs.encryptWithIV(K, IV, M);
+
+  t.notDeepEqual(M, C);
+  t.end();
+});
+
+test('encryptWithIV should not return the same ciphertext as encrypt (without IV)', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , M =   [68, 69, 70]
+    , C1
+    , C2
+    ;
+
+  C1 = spritzjs.encryptWithIV(K, IV, M);
+  C2 = spritzjs.encrypt(K, M);
+
+  t.notDeepEqual(C1, C2);
+  t.end();
+});
+
+
+
+
+test('decryptWithIV should disallow invalid arguments', function (t) {
+
+  t.equal(spritzjs.decryptWithIV(),                 false);       // arity 0
+  t.equal(spritzjs.decryptWithIV([]),               false);       // arity 1
+  t.equal(spritzjs.decryptWithIV([], 1),            false);       // arity 2
+  t.equal(spritzjs.decryptWithIV([], 1, 1, 1),      false);       // arity 4
+
+  // now here's a justification for TypeScript
+  t.equal(spritzjs.decryptWithIV([],   1),          false);       // K array too short
+
+  t.equal(spritzjs.decryptWithIV([1], ""),          false);       // invalid IV
+  t.equal(spritzjs.decryptWithIV([1],  []),         false);       // invalid IV
+
+  t.equal(spritzjs.decryptWithIV([1],  [1], ""),    false);       // invalid C
+  t.equal(spritzjs.decryptWithIV([1],  [1], []),    false);       // invalid C
+  // TODO impose minimum K, IV lengths greater than 1!
+  t.end();
+});
+
+test('decryptWithIV should return a plaintext M of the same length as C', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , C =   [68, 69, 70]
+    , M
+    ;
+
+  M = spritzjs.decryptWithIV(K, IV, C);
+
+  t.equal(M.length, C.length);
+  t.end();
+});
+
+test('decryptWithIV should not return the same ciphertext that went in', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , C =   [68, 69, 70]
+    , M
+    ;
+
+  M = spritzjs.decryptWithIV(K, IV, C);
+
+  t.notDeepEqual(M, C);
+  t.end();
+});
+
+test('decryptWithIV(K, IV, encryptWithIV(K, IV, M)) should equal the original M', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , M =   [68, 69, 70]
+    ;
+
+  t.deepEqual(spritzjs.decryptWithIV(K, IV, spritzjs.encryptWithIV(K, IV, M)), M);
+  // QED
+  t.end();
+});
+
+test('decryptWithIV(K, IV, encrypt(K2, M)) should not equal the original M', function (t) {
+  var K =   [65, 66, 67]
+    , IV =  [1, 2, 3]
+    , M =   [68, 69, 70]
+    ;
+
+  t.notDeepEqual(spritzjs.decryptWithIV(K, IV, spritzjs.encrypt(K, M)), M);
+  t.end();
+});
+
 
 
