@@ -8,7 +8,7 @@
   Provide a literal JavaScript reference implementation from the excellent pseudo-code
   created by Rivest and Schuldt; allowing the reader to follow the Paper with this code
   serving as an accompaniment. To this end, variable/parameter names and their casing have
-  been preserved, however the function names have been camel-cased for JS convention.
+  been preserved, however the function names have been camelCased for JS convention.
 
   It is hoped this may serve as a starting point for those who wish to explore this cipher
   in a JS context.
@@ -40,7 +40,6 @@
 
 ******************************************************************************/
 
-/* bog-standard IIFE */
 (function () {
 
   "use strict";
@@ -398,7 +397,7 @@
   }
 
   /*
-  NB. This is not in the Paper, merely implied
+  NB. This is not in the Paper, it is implied
   DecryptWithIV(K, IV, C)
   1 KeySetup(K); AbsorbStop()
   2 Absorb(IV)
