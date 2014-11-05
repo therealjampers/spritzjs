@@ -338,6 +338,34 @@
   }
 
   /*
+  Decrypt(K , C)
+  1 KeySetup(K)
+  2 M = C − Squeeze(M.length)       <--- this should be C.length, IMHO
+  3 return M
+  */
+  function decrypt(K, C) {
+
+    var M = []
+      , stream
+      , i
+      ;
+
+    if (!(Array.prototype.slice.call(arguments).length === 2
+        && Array.isArray(K)
+        && K.length > 0
+        && Array.isArray(C)
+        && C.length > 0)) return false;
+
+    keySetup(K);
+    stream = squeeze(C.length);
+    for (i = 0; i < C.length; i++) {
+      M[i] = msub(C[i], stream[i]);
+      // NB. this could be xor instead of modulo addition
+    }
+    return M;
+  }
+
+  /*
   KeySetup(K)
   1 InitializeState()
   2 Absorb(K)
@@ -359,12 +387,6 @@
 
 /*
 TODO
-
-Decrypt(K , C)
-1 KeySetup(K)
-2 M = C − Squeeze(M.length)
-3 return M
-
 EncryptWithIV(K, IV, M)
 1 KeySetup(K); AbsorbStop()
 2 Absorb(IV)
@@ -458,6 +480,7 @@ EncryptWithIV(K, IV, M)
     /* high-level functions */
       hash: hash
     , encrypt: encrypt
+    , decrypt: decrypt
     // TODO add encrypt/decrypt
 
     /* core functions */

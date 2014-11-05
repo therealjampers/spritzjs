@@ -36,6 +36,7 @@ test('spritzjs API', function (t) {
   t.equal(typeof spritzjs.hash,         "function");
   t.equal(typeof spritzjs.keySetup,     "function");
   t.equal(typeof spritzjs.encrypt,      "function");
+  t.equal(typeof spritzjs.decrypt,      "function");
   t.end();
 });
 
@@ -282,7 +283,7 @@ test('encrypt should disallow invalid arguments', function (t) {
 
   t.equal(spritzjs.encrypt([],   1),   false);       // K array too short
   t.equal(spritzjs.encrypt([1], ""),   false);       // invalid M
-  t.equal(spritzjs.encrypt([1],  []),  false);      // invalid M
+  t.equal(spritzjs.encrypt([1],  []),  false);       // invalid M
   // TODO impose a minimum K length greater than 1!
   t.end();
 });
@@ -308,6 +309,54 @@ test('encrypt should not return the same message that went in', function (t) {
   C = spritzjs.encrypt(K, M);
 
   t.notDeepEqual(M, C);
+  t.end();
+});
+
+
+test('decrypt should disallow invalid arguments', function (t) {
+
+  t.equal(spritzjs.decrypt(),          false);       // arity 0
+  t.equal(spritzjs.decrypt([]),        false);       // arity 1
+  t.equal(spritzjs.decrypt([], 1, 1),  false);       // arity 3
+
+  t.equal(spritzjs.decrypt([],   1),   false);       // K array too short
+  t.equal(spritzjs.decrypt([1], ""),   false);       // invalid C
+  t.equal(spritzjs.decrypt([1],  []),  false);       // invalid C
+  // TODO impose a minimum K length greater than 1!
+  t.end();
+});
+
+test('decrypt should return a plaintext M of the same length as C', function (t) {
+  var K = [65, 66, 67]
+    , C = [68, 69, 70]
+    , M
+    ;
+
+  M = spritzjs.decrypt(K, C);
+
+  t.equal(C.length, M.length);
+  t.end();
+});
+
+test('decrypt should not return the same ciphertext that went in', function (t) {
+  var K = [65, 66, 67]
+    , C = [68, 69, 70]
+    , M
+    ;
+
+  M = spritzjs.decrypt(K, C);
+
+  t.notDeepEqual(C, M);
+  t.end();
+});
+
+test('decrypt(K, encrypt(K, M)) should equal the original M', function (t) {
+  var K = [65, 66, 67]
+    , M = [68, 69, 70]
+    ;
+
+  t.deepEqual(spritzjs.decrypt(K, spritzjs.encrypt(K, M)), M);
+  // QED
   t.end();
 });
 
