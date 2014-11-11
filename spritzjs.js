@@ -576,6 +576,14 @@ Output Squeeze(r )
       }
       API = facadeOptional;
     }
+    /*
+      Object.freeze prevents trivial XSS modification of spritzjs:
+
+      eg.
+      spritzjs.hash=function(){return 'pwned'}
+      spritzjs.hash([65,66,67], 32)             //  -> [2, 143, 162,..., ]
+
+    */
     return Object.freeze(API);
   }
 
