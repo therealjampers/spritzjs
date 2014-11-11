@@ -85,13 +85,13 @@ then:
 
 ### TODO
 
-- <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using [testem](https://www.npmjs.org/package/testem), [jasmine](https://www.npmjs.org/package/jasmine) and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))
-- Code - complete the basic API with encrypt/decrypt etc
-- Usage - hashing and encrypt/decrypt example now included</strike>
+- <strike>Reinstate the unit-tests - spritzjs was developed in a TDD manner using [testem](https://www.npmjs.org/package/testem), [jasmine](https://www.npmjs.org/package/jasmine) and a bunch of other stuff that doesn't need to be here so the tests will be added with a lighter test-harness (probably [tape](https://www.npmjs.org/package/tape))</strike>
+- <strike>Code - complete the basic API with encrypt/decrypt etc</strike>
+- <strike>Usage - hashing and encrypt/decrypt example now included</strike>
 - Code - add the remaining functions domhash/mac/aead
 - Threat Modeling - THREAT.md? "this cipher should not be used until pounded on by cryptanalysts" etc
 - Build - [browserify](https://www.npmjs.org/package/browserify) is awesome but we want to have the smallest footprint and are not using Node.js specific functionality. Consider js(l|h)int for ensuring correctness of the clean-source version
-- Modularise - stop tests and code getting monolithic. split into core and an opt-in API. separate cryptanalytical test-vectors from unit-tests
+- Modularise - <strike>stop tests and code getting monolithic. split into core and an opt-in API.</strike>separate cryptanalytical test-vectors from unit-tests
 - Performance - measure performance before optimising
 - Optimisation - there are quick-wins available. what about asm.js/SIMD can we use anything here?
 - Minification - once hand-optimised, let the uglification begin, when tests are in good shape, we could "golf" some interesting solutions
