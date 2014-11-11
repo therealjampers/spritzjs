@@ -50,6 +50,7 @@
     , N_MINUS_1 =         N - 1
     , N_OVER_TWO_FLOOR =  Math.floor(N / 2)
     , TWO_N =             2 * N
+    , MAX_ABSORB_LEN =    Math.floor(N / 4)
     /*
       premature optimization?
     */
@@ -292,16 +293,6 @@
   */
   function hash(M, r) {
 
-    /* TODO refactor into some common guard functions
-      NB. we are striving for readibility and Paper->Code mapping
-      but we can/should proxy the result of absorb when optimizing
-    */
-    if (!(Array.prototype.slice.call(arguments).length === 2
-        && Array.isArray(M)
-        && M.length > 0
-        && typeof r === 'number'
-        && r > 0)) return false;  // consider integer check for r
-
     initializeState();
     absorb(M); absorbStop();
     absorb([r & 0xff]);           // NB. restricted(!) to 255-byte hashes
@@ -320,12 +311,6 @@
       , stream
       , i
       ;
-
-    if (!(Array.prototype.slice.call(arguments).length === 2
-        && Array.isArray(K)
-        && K.length > 0
-        && Array.isArray(M)
-        && M.length > 0)) return false;
 
     keySetup(K);
     stream = squeeze(M.length);
@@ -349,12 +334,6 @@
       , i
       ;
 
-    if (!(Array.prototype.slice.call(arguments).length === 2
-        && Array.isArray(K)
-        && K.length > 0
-        && Array.isArray(C)
-        && C.length > 0)) return false;
-
     keySetup(K);
     stream = squeeze(C.length);
     for (i = 0; i < C.length; i++) {
@@ -376,14 +355,6 @@
       , stream
       , i
       ;
-
-    if (!(Array.prototype.slice.call(arguments).length === 3
-        && Array.isArray(K)
-        && K.length > 0
-        && Array.isArray(IV)
-        && IV.length > 0
-        && Array.isArray(M)
-        && M.length > 0)) return false;
 
     keySetup(K); absorbStop();
     absorb(IV);
@@ -409,14 +380,6 @@
       , stream
       , i
       ;
-
-    if (!(Array.prototype.slice.call(arguments).length === 3
-        && Array.isArray(K)
-        && K.length > 0
-        && Array.isArray(IV)
-        && IV.length > 0
-        && Array.isArray(C)
-        && C.length > 0)) return false;
 
     keySetup(K); absorbStop();
     absorb(IV);
@@ -555,8 +518,8 @@ Output Squeeze(r )
       , j: j
       , k: k
       , z: z
-      , a: a
       , w: w
+      , a: a
       /* return the permutation by value, not reference, to avoid potential fubars */
       , S: S.slice(0)
     };
@@ -594,16 +557,36 @@ Output Squeeze(r )
     , getState: getState
   };
 
+  /* NB. breaking-change from 0.3.12, spritzjs is now a constructor with optional facade */
+  function ctor(facadeOptional) {
 
-  /* low-rent API exporting */
+    // if there is a facade provided and the keys match API methods
+    // then call the guard functions first and return the core results afterwards
+    // reassign API to the modified facade
+    if (typeof facadeOptional === 'object') {
+      for (var key in facadeOptional) {
+        if (API.hasOwnProperty(key)) {
+          facadeOptional[key] = (function (functionName, guardFunction, spritzjsFunction) {
+            return function () {
+              if (!guardFunction.apply({}, arguments)) return false;
+              return spritzjsFunction.apply({}, arguments);
+            };
+          }(key, facadeOptional[key], API[key]));
+        }
+      }
+      API = facadeOptional;
+    }
+    return Object.freeze(API);
+  }
+
   if(typeof module !== 'undefined' && module.exports){
     /* export in Node.js style */
-    module.exports = API;
+    module.exports = ctor;
   } else if (typeof window !== 'undefined' && !window.spritzjs) {
     /* augment window object */
-    window.spritzjs = API;
+    window.spritzjs = ctor;
   } else {
     /* ...requires consumer-thought */
-    if (typeof console !== 'undefined') console.error("unable to export spritzjs API!");
+    if (typeof console !== 'undefined') console.error("unable to export spritzjs ctor!");
   }
 }());

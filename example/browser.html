@@ -1,10 +1,23 @@
+<script src="../facade-high-level.js"></script>
 <script src="../spritzjs.js"></script>
 <script>
+
+  (function setUp() {
+
+    //  window.facadeHighLevel only exposes the high-level API
+    //  hash, encrypt/decrypt, encryptWithIV/decryptWithIV
+    //  it also enforces the guards refactored out from spritzjs v0.3
+    window.facadeHighLevel = window.facadeHighLevel;
+
+    //  spritzjs module is now a constructor, with optional facade
+    //  if no facade is provided then all spritzjs functions are exposed
+    window.spritzjs = window.spritzjs(window.facadeHighLevel);
+
+  }());
 
   (function hashExample(){
     var M = [65, 66, 67];             // "ABC" as a byte array
     var r = 32;                       // 32 byte hash desired
-
     var hashed = spritzjs.hash(M, r); // "hashed" now contains 32 bytes of hashed "M" material
 
     console.log(hashed.length);       // -> 32

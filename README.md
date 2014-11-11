@@ -36,6 +36,8 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 	npm install spritzjs
 
+	cd spritzjs
+
 	npm install
 
 ##### Run tests
@@ -48,11 +50,11 @@ Tested in: Node.js (0.10.26+), Chrome (38+), Firefox (33+)
 
 ### Usage
 
-	var spritzjs = require('spritzjs');
+	var spritzjs = require('spritzjs')();
 
-or in the browser (though not strictly needed):
+or in the browser:
 
-	var spritzjs = window.spritzjs;
+	var spritzjs = window.spritzjs();
 
 then:
 
@@ -71,7 +73,7 @@ then:
 	var M = [84, 104, 97, 110, 107, 32, 121, 111, 117, 32, 102, 111, 114, 32, 100, 101, 99, 111, 100, 105, 110, 103, 32, 116, 104, 105, 115, 32, 112, 108, 97, 105, 110, 116, 101, 120, 116, 32, 97, 116, 32, 108, 101, 97, 115, 116, 44, 32, 73, 32, 104, 111, 112, 101, 32, 121, 111, 117, 32, 119, 105, 108, 108, 32, 116, 114, 121, 32, 115, 112, 114, 105, 116, 122, 106, 115, 33];
 
 	var encrypted = spritzjs.encrypt(K, M);       // "encrypted" now contains ciphertext C
-	
+
 	console.log(encrypted.length === M.length);   // -> true
 	console.log(encrypted);	                      // -> [27, 217, 247,..., 165]
 
