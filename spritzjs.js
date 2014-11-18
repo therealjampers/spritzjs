@@ -24,8 +24,8 @@
   References:
   "Spritz - a spongy RC4-like stream cipher and hash function"
     by Rivest and Schuldt - http://people.csail.mit.edu/rivest/pubs/RS14.pdf
-  "Security Now" podcast, episode 479 - http://twit.tv/show/security-now/479
-  "Security Now" podcast, episode 480 - http://twit.tv/show/security-now/480
+  "Security Now" podcast, episode 479 (~21 mins) - http://twit.tv/show/security-now/479
+  "Security Now" podcast, episode 480 (~57 mins) - http://twit.tv/show/security-now/480
   "Schneier on Security" - https://www.schneier.com/blog/archives/2014/10/spritz_a_new_rc.html
 
   For more information you can find the latest README.md, tests and other versions at:
@@ -50,10 +50,10 @@
     , N_MINUS_1 =         N - 1
     , N_OVER_TWO_FLOOR =  Math.floor(N / 2)
     , TWO_N =             2 * N
-    , MAX_ABSORB_LEN =    Math.floor(N / 4)
     /*
-      premature optimization?
+      TODO: this is unused, merely a reminder to move to high-level facade/guards
     */
+    , MAX_ABSORB_LEN =    Math.floor(N / 4)
     ;
 
   /*
@@ -520,14 +520,18 @@ Output Squeeze(r )
       , z: z
       , w: w
       , a: a
-      /* return the permutation by value, not reference, to avoid potential fubars */
+      /*  return the permutation by value not reference to avoid potential fubars
+          TODO: check in Nodeland, though we are using primitive
+          N-values in Arrays, and not Buffers
+      */
       , S: S.slice(0)
     };
   }
 
   /*
     API definition
-    feel free to comment out any that should not be exposed
+    NB. the optional facade construction now allows for
+    "opt-in" exposure, guarding, and freezing of these :)
   */
   var API = {
     /* high-level functions */
@@ -563,6 +567,8 @@ Output Squeeze(r )
     // if there is a facade provided and the keys match API methods
     // then call the guard functions first and return the core results afterwards
     // reassign API to the modified facade
+
+    // TODO: refactor at your own discretion, establish your support baseline and use bind etc.
     if (typeof facadeOptional === 'object') {
       for (var key in facadeOptional) {
         if (API.hasOwnProperty(key)) {
@@ -577,18 +583,18 @@ Output Squeeze(r )
       API = facadeOptional;
     }
     /*
-      Object.freeze prevents trivial XSS modification of spritzjs:
+      Object.freeze (may) prevent trivial XSS modification of spritzjs:
 
       eg.
-      spritzjs.hash=function(){return 'pwned'}
-      spritzjs.hash([65,66,67], 32)             //  -> [2, 143, 162,..., ]
+      spritzjs.hash=function(){return 'pwned'}  // this shouldn't modify spritzjs.hash
+      spritzjs.hash([65,66,67], 32)             // therefore, still returns -> [2, 143, 162,...]
 
     */
     return Object.freeze(API);
   }
 
   if(typeof module !== 'undefined' && module.exports){
-    /* export in Node.js style */
+    /* export in CommonJS style */
     module.exports = ctor;
   } else if (typeof window !== 'undefined' && !window.spritzjs) {
     /* augment window object */

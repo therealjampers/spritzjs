@@ -1,6 +1,6 @@
 var test = require('tape')
   //  We'll construct spritzjs without a facade
-  , spritzjs = require('../')()
+  , spritzjs = require('../spritzjs')()
   ;
 
 /*  JSON string representation of an N=256 initialized state */
