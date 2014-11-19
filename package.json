@@ -1,6 +1,6 @@
 {
   "name": "spritzjs",
-  "version": "1.3.16",
+  "version": "1.4.17",
   "description": "A Spritz stream-cipher implementation in JavaScript",
   "main": "spritzjs.js",
   "scripts": {
