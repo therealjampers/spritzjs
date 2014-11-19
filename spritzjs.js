@@ -412,22 +412,38 @@
     return true;
   }
 
-  /* TODO
-DomHash(J,M,r)
-1 InitializeState()
-2 Absorb(J ); AbsorbStop()
-3 Absorb(M ); AbsorbStop()
-4 Absorb(r)
-5 return Squeeze(r )
+  /*
+  DomHash(J,M,r)
+  1 InitializeState()
+  2 Absorb(J ); AbsorbStop()
+  3 Absorb(M ); AbsorbStop()
+  4 Absorb(r)
+  5 return Squeeze(r )
+  */
+  function domHash(J, M, r) {
+    initializeState();
+    absorb(J); absorbStop();
+    absorb(M); absorbStop();
+    absorb(r);
+    return squeeze(r);
+  }
 
-
-MAC(K,M,r)
-1 InitializeState()
-2 Absorb(K ); AbsorbStop()
-3 Absorb(M ); AbsorbStop()
-4 Absorb(r)
-5 return Squeeze(r )
-
+  /*
+  MAC(K,M,r)
+  1 InitializeState()
+  2 Absorb(K ); AbsorbStop()
+  3 Absorb(M ); AbsorbStop()
+  4 Absorb(r)
+  5 return Squeeze(r )
+  */
+  function mac(K, M, r) {
+    initializeState();
+    absorb(K); absorbStop();
+    absorb(M); absorbStop();
+    absorb(r);
+    return squeeze(r);
+  }
+/* TODO
 AEAD(K,Z,H,M,r)
 1 InitializeState()
 2 Absorb(K ); AbsorbStop()
@@ -540,6 +556,8 @@ Output Squeeze(r )
     , decrypt: decrypt
     , encryptWithIV: encryptWithIV
     , decryptWithIV: decryptWithIV
+    , domHash: domHash
+    , mac: mac
 
     /* core functions */
     , keySetup: keySetup

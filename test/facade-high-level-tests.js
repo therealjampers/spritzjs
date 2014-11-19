@@ -14,6 +14,7 @@ test('spritzjs API', function (t) {
   t.equal(typeof spritzjs.decrypt,        "function");
   t.equal(typeof spritzjs.encryptWithIV,  "function");
   t.equal(typeof spritzjs.decryptWithIV,  "function");
+  t.equal(typeof spritzjs.domHash,        "function");
   t.end();
 });
 
@@ -109,7 +110,7 @@ test('decryptWithIV should disallow invalid arguments', function (t) {
   t.end();
 });
 
-
+/* sanity check, is actually a test-vector */
 test('hash should return test-vector result for "ABC"', function (t) {
 
   var M = [65, 66, 67]    //  "ABC"
@@ -129,5 +130,46 @@ test('hash should return test-vector result for "ABC"', function (t) {
   t.equal(hashed[5], 0x93);
   t.equal(hashed[6], 0x4a);
   t.equal(hashed[7], 0x18);
+  t.end();
+});
+
+test('domHash should disallow invalid arguments', function (t) {
+
+  // now here's a justification for TypeScript
+  t.equal(spritzjs.domHash(),                 false);       // arity 0
+  t.equal(spritzjs.domHash([]),               false);       // arity 1
+  t.equal(spritzjs.domHash([], 1),            false);       // arity 2
+  t.equal(spritzjs.domHash([], 1, 1, 1),      false);       // arity 4
+
+  t.equal(spritzjs.domHash([],   1),          false);       // J array too short
+
+  // hmm this looks dodgy, need to check encryptWithIV tests! .ts facades needed?
+  t.equal(spritzjs.domHash([1], ""),          false);       // invalid M
+  t.equal(spritzjs.domHash([1],  []),         false);       // invalid M
+
+  t.equal(spritzjs.domHash([1],  [1], ""),    false);       // invalid r
+  t.equal(spritzjs.domHash([1],  [1], []),    false);       // invalid r
+
+  t.end();
+});
+
+
+test('mac should disallow invalid arguments', function (t) {
+
+  // now here's a justification for TypeScript
+  t.equal(spritzjs.mac(),                 false);       // arity 0
+  t.equal(spritzjs.mac([]),               false);       // arity 1
+  t.equal(spritzjs.mac([], 1),            false);       // arity 2
+  t.equal(spritzjs.mac([], 1, 1, 1),      false);       // arity 4
+
+  t.equal(spritzjs.mac([],   1),          false);       // J array too short
+
+  // hmm this looks dodgy, need to check encryptWithIV tests! .ts facades needed?
+  t.equal(spritzjs.mac([1], ""),          false);       // invalid M
+  t.equal(spritzjs.mac([1],  []),         false);       // invalid M
+
+  t.equal(spritzjs.mac([1],  [1], ""),    false);       // invalid r
+  t.equal(spritzjs.mac([1],  [1], []),    false);       // invalid r
+
   t.end();
 });

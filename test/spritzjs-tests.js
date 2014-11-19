@@ -40,6 +40,8 @@ test('spritzjs API', function (t) {
   t.equal(typeof spritzjs.decrypt,        "function");
   t.equal(typeof spritzjs.encryptWithIV,  "function");
   t.equal(typeof spritzjs.decryptWithIV,  "function");
+  t.equal(typeof spritzjs.domHash,        "function");
+  t.equal(typeof spritzjs.mac,            "function");
   t.end();
 });
 
@@ -416,5 +418,84 @@ test('decryptWithIV(K, IV, encrypt(K, M)) should not equal the original M', func
     ;
 
   t.notDeepEqual(spritzjs.decryptWithIV(K, IV, spritzjs.encrypt(K, M)), M);
+  t.end();
+});
+
+test('domHash should return an array of the right length with J, M, r', function (t) {
+
+  var J = str2byteArr("foobardomain")
+    , M = str2byteArr("ABC")
+    , r = 0x20
+    , domHashed
+    ;
+
+  domHashed = spritzjs.domHash(J, M, r);
+
+  t.equal(Array.isArray(domHashed), true);
+  t.equal(domHashed.length, r);
+  t.end();
+});
+
+test('domHash should not return the same result as hash with "ABC"', function (t) {
+
+  var J = str2byteArr("foobardomain")
+    , M = str2byteArr("ABC")
+    , r = 0x20
+    , domHashed
+    , hashed
+    ;
+
+  domHashed = spritzjs.domHash(J, M, r);
+  hashed = spritzjs.hash(M, r);
+
+  t.notDeepEqual(domHashed, hashed);
+  t.end();
+});
+
+
+test('mac should return an array of the right length with K, M, r', function (t) {
+
+  var K = str2byteArr("[iAmASuperSeekretKey]")
+    , M = str2byteArr("ABC")
+    , r = 0x20
+    , mac
+    ;
+
+  mac = spritzjs.mac(K, M, r);
+
+  t.equal(Array.isArray(mac), true);
+  t.equal(mac.length, r);
+  t.end();
+});
+
+test('mac should not return the same result as hash with "ABC"', function (t) {
+
+  var K = str2byteArr("[iAmASuperSeekretKey]")
+    , M = str2byteArr("ABC")
+    , r = 0x20
+    , mac
+    , hashed
+    ;
+
+  mac = spritzjs.mac(K, M, r);
+  hashed = spritzjs.hash(M, r);
+
+  t.notDeepEqual(mac, hashed);
+  t.end();
+});
+
+test('mac *should* return the same result as domHash with "ABC"', function (t) {
+
+  var K = str2byteArr("[iAmASuperSeekretKey]")
+    , M = str2byteArr("ABC")
+    , r = 0x20
+    , mac
+    , domHashed
+    ;
+
+  mac = spritzjs.mac(K, M, r);
+  domHashed = spritzjs.hash(M, r);
+
+  t.notDeepEqual(mac, domHashed);
   t.end();
 });
